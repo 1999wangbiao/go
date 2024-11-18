@@ -3,11 +3,13 @@ package res
 type ErrorCode int
 
 const (
-	SettringsError ErrorCode = 10001
+	SettingsError ErrorCode = 10001
+	ArgumentError ErrorCode = 10002
 )
 
 var (
 	ErrorMap = map[ErrorCode]string{
-		SettringsError: "系统错误",
+		SettingsError: "系统错误",
+		ArgumentError: "参数错误",
 	}
 )

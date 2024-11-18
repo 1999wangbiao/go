@@ -1,33 +1,63 @@
 mysql:
-  host: 127.0.0.1
-  port: 3310
-  db: gvb_db
-  user: root
-  password: 123456
-  log_leve: dev
+    host: 127.0.0.1
+    port: "3310"
+    config: ""
+    db: gvb_db
+    user: root
+    password: "123456"
+    log_Level: ""
 logger:
-  level: info
-  prefix: '[gin_project]'
-  director: log
-  show_line: true
-  log_in_console: true
+    level: info
+    prefix: '[gin_project]'
+    director: log
+    show_line: "true"
+    log_in_console: "true"
 system:
-  host: "0.0.0.0"
-  port: 8080
-  env: release
+    host: 0.0.0.0
+    port: 8080
+    env: release
 site_info:
-  created_at: "2024-11.15"
-  bei_an: 京ICP备202411538234号-1
-  title: 天下独一的博客
-  wechat_qr_image: https://q1.qlogo.cn/g?b=qq&nk=123456&s=640
-  qq_qr_image: https://q1.qlogo.cn/g?b=qq&nk=123456&s=640
-  qq_number: "123456"
-  version: 1.0.0
-  email: 123456@qq.com
-  github: https://github.com/123456
-  gitee: https://gitee.com/123456
-  name: 就这样咯
-  job: 程序员
-  address: 武汉
-  slogan: 一路前行
-  slogan_en: Love and love
+    created_at: 2024-11.15
+    bei_an: 京ICP备202411538234号-1
+    title: 天下独一的博客
+    wechat_qr_image: https://q1.qlogo.cn/g?b=qq&nk=123456&s=640
+    qq_qr_image: https://q1.qlogo.cn/g?b=qq&nk=123456&s=640
+    qq_number: 123sdfafa456
+    version: 1.0.0
+    email: 123456@qq.com
+    git_url: ""
+    gitee_url: https://gitee.com/123456
+    name: lll
+    job: 程序员
+    address: 武汉
+    slogan: 一路前行
+    slogan_en: Love and love
+jwt:
+    expires: 48
+    issuer: gin_chat
+    grant_scope: chat,read user info
+    subject: chat
+email:
+    host: smtp.qq
+    port: 465
+    user: 1103782715@qq.com
+    password: ahvvuoqmrmiyfjhj
+    default_from_email: 手机千万不要放在外套口袋！！！
+    user_ssl: false
+    user_tls: false
+    authorization_code: ahvvuoqmrmiyfjhj
+redis:
+    host: 127.0.0.1
+    port: 6379
+    password: ""
+    db: 0
+    pool_size: 10
+    mini_dle_conns: 10
+qiNiu:
+    enable: false
+    access_key: safda
+    secret_key: asdf
+    bucket: asdf
+    cdn: asdfa
+    zone: asdfa
+    size: 0
