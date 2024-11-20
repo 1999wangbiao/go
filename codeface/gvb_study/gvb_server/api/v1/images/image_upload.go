@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 type ImagesApi struct{}
@@ -47,6 +48,19 @@ func (ImagesApi) ImageLoad(c *gin.Context) {
 	}
 	var resList []FileUpLoadResponse
 	for _, fileHeader := range fileHeaders {
+		//设置图片文件过滤(白名单)
+		// 获取文件扩展名并转为小写
+		fileExtension := strings.ToLower(filepath.Ext(fileHeader.Filename))
+		if !global.AllowedImageExtensions[fileExtension] {
+			resList = append(resList, FileUpLoadResponse{
+				FileName:  fileHeader.Filename,
+				IsSuccess: false,
+				Msg:       "文件类型不正确",
+			})
+
+			continue
+		}
+
 		size := float64(fileHeader.Size) / float64(1024*1024)
 		if size >= float64(global.Config.UpLoad.Size) {
 			resList = append(resList, FileUpLoadResponse{

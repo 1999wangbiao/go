@@ -13,3 +13,11 @@ var (
 	Log    *logrus.Logger
 	Router *gin.Engine
 )
+
+// 定义允许上传图片的文件扩展名白名单
+var AllowedImageExtensions = map[string]bool{
+	".jpg":  true,
+	".jpeg": true,
+	".png":  true,
+	".gif":  true,
+}
