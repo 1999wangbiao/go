@@ -65,3 +65,6 @@ qq:
     app_id: "273"
     key: "123456"
     redirect: sdf
+upLoad:
+    path: uploads/images
+    size: 12
