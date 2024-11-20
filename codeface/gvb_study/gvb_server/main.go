@@ -15,7 +15,7 @@ func main() {
 	global.Log.Warnln("嘻嘻嘻")
 	global.Log.Infoln("哈哈哈")
 	//连接数据库
-	global.DB = core.InitGrom()
+	global.DB = core.InitGorm()
 	option := flag.Parse()
 	if flag.IsWebStop(option) {
 		flag.SwitchOption(option)

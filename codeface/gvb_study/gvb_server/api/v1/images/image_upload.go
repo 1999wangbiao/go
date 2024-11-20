@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
 	"gvb_server/models/common/res"
+	"gvb_server/models/system"
+	"gvb_server/utils"
 	"os"
 	"path"
 	"path/filepath"
@@ -55,9 +57,8 @@ func (ImagesApi) ImageLoad(c *gin.Context) {
 			resList = append(resList, FileUpLoadResponse{
 				FileName:  fileHeader.Filename,
 				IsSuccess: false,
-				Msg:       "文件类型不正确",
+				Msg:       "文件类型不正确!",
 			})
-
 			continue
 		}
 
@@ -66,21 +67,46 @@ func (ImagesApi) ImageLoad(c *gin.Context) {
 			resList = append(resList, FileUpLoadResponse{
 				FileName:  fileHeader.Filename,
 				IsSuccess: false,
-				Msg:       fmt.Sprintf("图片大小为%fMB超过设定大小,设定大小为:%dMB", size, global.Config.UpLoad.Size),
+				Msg:       fmt.Sprintf("图片大小为%fMB超过设定大小,设定大小为:%dMB!", size, global.Config.UpLoad.Size),
+			})
+			continue
+		}
+		//获取图片hash
+		hash, err := utils.GenerateMD5FromFileHeader(fileHeader)
+		if err != nil {
+			global.Log.Error(err)
+			continue
+		}
+
+		filePath := path.Join(global.Config.UpLoad.Path, fileHeader.Filename)
+		err = c.SaveUploadedFile(fileHeader, filePath)
+		if err != nil {
+			global.Log.Error(err)
+			continue
+		}
+		//通过hash查询图片是否已经存在数据库
+		var bannerModel system.BannerModel
+		err = global.DB.Take(&bannerModel, "hash = ?", hash).Error
+		if err == nil {
+			//已经存在数据库
+			resList = append(resList, FileUpLoadResponse{
+				FileName:  fileHeader.Filename,
+				IsSuccess: false,
+				Msg:       "该图片已经存在.",
 			})
 			continue
 		}
 		resList = append(resList, FileUpLoadResponse{
 			FileName:  fileHeader.Filename,
 			IsSuccess: true,
-			Msg:       "上传成功",
+			Msg:       "上传成功!",
 		})
-		filePath := path.Join(global.Config.UpLoad.Path, fileHeader.Filename)
-		err := c.SaveUploadedFile(fileHeader, filePath)
-		if err != nil {
-			global.Log.Error(err)
-			continue
-		}
+		//插入数据库
+		global.DB.Create(&system.BannerModel{
+			Path: filePath,
+			Hash: hash,
+			Name: fileHeader.Filename,
+		})
 	}
 	res.OKWithData(resList, c)
 }

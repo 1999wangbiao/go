@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func InitGrom() *gorm.DB {
+func InitGorm() *gorm.DB {
 	if global.Config.Mysql.Host == "" {
 		global.Log.Warn("未配置")
 		return nil
