@@ -11,6 +11,12 @@ type Response struct {
 	Msg  string `json:"msg"`
 }
 
+// ListResponse 泛型的使用
+type ListResponse[T any] struct {
+	Count int64 `json:"count"`
+	List  T     `json:"list"`
+}
+
 const (
 	Success = 0
 	Error   = 7
@@ -36,6 +42,11 @@ func OKWithData(data any, c *gin.Context) {
 	Result(Success, data, "成功", c)
 }
 
+func OKWithList(list any, count int64, c *gin.Context) {
+	OKWithData(ListResponse[any]{
+		Count: count,
+		List:  list}, c)
+}
 func OKWithMsg(msg string, c *gin.Context) {
 	Result(Success, map[string]any{}, msg, c)
 }

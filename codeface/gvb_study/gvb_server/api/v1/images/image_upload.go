@@ -21,7 +21,7 @@ type FileUpLoadResponse struct {
 	Msg       string `json:"msg"`
 }
 
-// 上传多个图片
+// ImageLoad 上传多个图片
 func (ImagesApi) ImageLoad(c *gin.Context) {
 
 	form, err := c.MultipartForm()
