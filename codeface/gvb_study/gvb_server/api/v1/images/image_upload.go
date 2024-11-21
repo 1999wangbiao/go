@@ -1,25 +1,17 @@
 package images
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
 	"gvb_server/models/common/res"
-	"gvb_server/models/system"
-	"gvb_server/utils"
+	"gvb_server/service"
+	"gvb_server/service/image_service"
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 )
 
 type ImagesApi struct{}
-
-type FileUpLoadResponse struct {
-	FileName  string `json:"file_name"`
-	IsSuccess bool   `json:"is_success"`
-	Msg       string `json:"msg"`
-}
 
 // ImageLoad 上传多个图片
 func (ImagesApi) ImageLoad(c *gin.Context) {
@@ -48,65 +40,21 @@ func (ImagesApi) ImageLoad(c *gin.Context) {
 			return
 		}
 	}
-	var resList []FileUpLoadResponse
+	var resList []image_service.FileUpLoadResponse
 	for _, fileHeader := range fileHeaders {
-		//设置图片文件过滤(白名单)
-		// 获取文件扩展名并转为小写
-		fileExtension := strings.ToLower(filepath.Ext(fileHeader.Filename))
-		if !global.AllowedImageExtensions[fileExtension] {
-			resList = append(resList, FileUpLoadResponse{
-				FileName:  fileHeader.Filename,
-				IsSuccess: false,
-				Msg:       "文件类型不正确!",
-			})
-			continue
+		//保存图片
+		uploadService := service.ServiceApp.ImageService.ImageUploadService(fileHeader)
+		//是否保存成功
+		if uploadService.IsSuccess {
+			filePath := path.Join(global.Config.UpLoad.Path, fileHeader.Filename)
+			err = c.SaveUploadedFile(fileHeader, filePath)
+			if err != nil {
+				uploadService.Msg = err.Error()
+				global.Log.Error(err)
+				continue
+			}
 		}
-
-		size := float64(fileHeader.Size) / float64(1024*1024)
-		if size >= float64(global.Config.UpLoad.Size) {
-			resList = append(resList, FileUpLoadResponse{
-				FileName:  fileHeader.Filename,
-				IsSuccess: false,
-				Msg:       fmt.Sprintf("图片大小为%fMB超过设定大小,设定大小为:%dMB!", size, global.Config.UpLoad.Size),
-			})
-			continue
-		}
-		//获取图片hash
-		hash, err := utils.GenerateMD5FromFileHeader(fileHeader)
-		if err != nil {
-			global.Log.Error(err)
-			continue
-		}
-
-		filePath := path.Join(global.Config.UpLoad.Path, fileHeader.Filename)
-		err = c.SaveUploadedFile(fileHeader, filePath)
-		if err != nil {
-			global.Log.Error(err)
-			continue
-		}
-		//通过hash查询图片是否已经存在数据库
-		var bannerModel system.BannerModel
-		err = global.DB.Take(&bannerModel, "hash = ?", hash).Error
-		if err == nil {
-			//已经存在数据库
-			resList = append(resList, FileUpLoadResponse{
-				FileName:  fileHeader.Filename,
-				IsSuccess: false,
-				Msg:       "该图片已经存在.",
-			})
-			continue
-		}
-		resList = append(resList, FileUpLoadResponse{
-			FileName:  fileHeader.Filename,
-			IsSuccess: true,
-			Msg:       "上传成功!",
-		})
-		//插入数据库
-		global.DB.Create(&system.BannerModel{
-			Path: filePath,
-			Hash: hash,
-			Name: fileHeader.Filename,
-		})
+		resList = append(resList, uploadService)
 	}
 	res.OKWithData(resList, c)
 }
