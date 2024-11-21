@@ -13,4 +13,5 @@ func (s *ImagesRouter) InitImagesRouter(Router *gin.Engine) {
 	imagesApi := api.ApiGroupApp.ImagesApi
 	imagesRouter.POST("upload", imagesApi.ImageLoad)
 	imagesRouter.GET("list", imagesApi.ImageListView)
+	imagesRouter.DELETE("delete", imagesApi.ImageRemoveView)
 }

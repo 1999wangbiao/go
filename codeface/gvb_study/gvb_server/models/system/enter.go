@@ -6,3 +6,7 @@ type Page struct {
 	Limit int    `form:"limit"` //每一页最多几个
 	Sort  string `form:"sort"`
 }
+
+type IDList struct {
+	IDList []uint `json:"id_list"`
+}
