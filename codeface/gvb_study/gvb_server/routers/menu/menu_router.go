@@ -15,4 +15,5 @@ func (s *MenuRouter) InitMenuRouter(Router *gin.Engine) {
 	menuRouter.GET("list", menuApi.MenuListView)
 	menuRouter.GET("name_list", menuApi.MenuNameList)
 	menuRouter.PUT("update", menuApi.MenuUpdateView)
+	menuRouter.DELETE("delete", menuApi.MenuRemoveView)
 }

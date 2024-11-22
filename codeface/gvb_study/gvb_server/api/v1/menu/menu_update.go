@@ -17,6 +17,7 @@ func (MenuApi) MenuUpdateView(c *gin.Context) {
 	id := c.Param("id")
 	//先把之前的banner清空
 	var menuModel system.MenuModel
+
 	err = global.DB.Take(&menuModel, id).Error
 	if err != nil {
 		res.FailWithMsg("菜单不存在", c)
