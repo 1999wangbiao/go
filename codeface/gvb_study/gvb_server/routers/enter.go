@@ -9,6 +9,7 @@ import (
 	"gvb_server/global"
 	"gvb_server/routers/advert"
 	"gvb_server/routers/image"
+	"gvb_server/routers/menu"
 	"gvb_server/routers/system"
 )
 
@@ -16,6 +17,7 @@ type RouterGroup struct {
 	System system.RouterGroup
 	Image  image.RouterGroup
 	Advert advert.RouterGroup
+	Menu   menu.RouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)
@@ -32,5 +34,7 @@ func InitRoutes() *gin.Engine {
 	imageRouter.InitImagesRouter(Router)
 	advertRouter := RouterGroupApp.Advert
 	advertRouter.InitAdvertRouter(Router)
+	menuRouter := RouterGroupApp.Menu
+	menuRouter.InitMenuRouter(Router)
 	return Router
 }
