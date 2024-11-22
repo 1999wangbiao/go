@@ -20,6 +20,47 @@ definitions:
     - is_show
     - title
     type: object
+  menu.ImageSort:
+    properties:
+      image_id:
+        description: 图片id
+        type: integer
+      sort:
+        description: 在这个[]ImageSort 排第几
+        type: integer
+    type: object
+  menu.MenuRequest:
+    properties:
+      abstract:
+        description: 简介
+        items:
+          type: string
+        type: array
+      abstract_time:
+        description: 简介的切换时间
+        type: integer
+      banner_time:
+        description: 菜单的切换时间 0表示不切换
+        type: integer
+      image_sort_list:
+        description: 图片的具体顺序
+        items:
+          $ref: '#/definitions/menu.ImageSort'
+        type: array
+      menu_title:
+        type: string
+      menu_title_en:
+        type: string
+      slogan:
+        type: string
+      sort:
+        description: 菜单顺序
+        type: integer
+    required:
+    - menu_title
+    - menu_title_en
+    - sort
+    type: object
   res.ListResponse-system_AdvertModel:
     properties:
       count:
@@ -177,4 +218,33 @@ paths:
       summary: 广告修改
       tags:
       - 广告管理
+  /menu/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建菜单
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/menu.MenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加菜单成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 创建菜单
+      tags:
+      - 菜单管理
 swagger: "2.0"

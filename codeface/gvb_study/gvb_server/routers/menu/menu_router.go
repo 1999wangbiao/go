@@ -12,7 +12,7 @@ func (s *MenuRouter) InitMenuRouter(Router *gin.Engine) {
 	menuRouter := Router.Group("menu")
 	menuApi := api.ApiGroupApp.MenuApi
 	menuRouter.POST("create", menuApi.MenuCreateView)
-	//menuRouter.GET("list", menuApi.MenuCreateView)
+	menuRouter.GET("list", menuApi.MenuListView)
 	//menuRouter.DELETE("delete", menuApi.MenuCreateView)
 	//menuRouter.PUT("update", menuApi.MenuCreateView)
 }

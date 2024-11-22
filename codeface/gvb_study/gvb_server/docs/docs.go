@@ -186,6 +186,57 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/menu/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建菜单",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "创建菜单",
+                "parameters": [
+                    {
+                        "description": "表示多个参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/menu.MenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "添加菜单成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -213,6 +264,64 @@ const docTemplate = `{
                 "title": {
                     "description": "广告标题 唯一",
                     "type": "string"
+                }
+            }
+        },
+        "menu.ImageSort": {
+            "type": "object",
+            "properties": {
+                "image_id": {
+                    "description": "图片id",
+                    "type": "integer"
+                },
+                "sort": {
+                    "description": "在这个[]ImageSort 排第几",
+                    "type": "integer"
+                }
+            }
+        },
+        "menu.MenuRequest": {
+            "type": "object",
+            "required": [
+                "menu_title",
+                "menu_title_en",
+                "sort"
+            ],
+            "properties": {
+                "abstract": {
+                    "description": "简介",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "abstract_time": {
+                    "description": "简介的切换时间",
+                    "type": "integer"
+                },
+                "banner_time": {
+                    "description": "菜单的切换时间 0表示不切换",
+                    "type": "integer"
+                },
+                "image_sort_list": {
+                    "description": "图片的具体顺序",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/menu.ImageSort"
+                    }
+                },
+                "menu_title": {
+                    "type": "string"
+                },
+                "menu_title_en": {
+                    "type": "string"
+                },
+                "slogan": {
+                    "type": "string"
+                },
+                "sort": {
+                    "description": "菜单顺序",
+                    "type": "integer"
                 }
             }
         },
