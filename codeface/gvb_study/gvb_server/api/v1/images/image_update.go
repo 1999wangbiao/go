@@ -29,6 +29,7 @@ func (ImagesApi) ImageUpdateView(c *gin.Context) {
 	err = global.DB.Model(&imageModel).Update("name", cr.Name).Error
 	if err != nil {
 		res.FailWithMsg(err.Error(), c)
+		return
 	}
 	res.OKWithMsg("图片名称修改成功", c)
 	return
