@@ -44,7 +44,6 @@ func (MenuApi) MenuListView(c *gin.Context) {
 			MenuModel: model,
 			Banners:   banners,
 		})
-
 	}
 	res.OKWithData(menus, c)
 	return

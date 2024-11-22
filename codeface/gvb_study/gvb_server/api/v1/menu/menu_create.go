@@ -14,8 +14,8 @@ type ImageSort struct {
 	Sort    int  `json:"sort"`     //在这个[]ImageSort 排第几
 }
 type MenuRequest struct {
-	MenuTitle     string      `json:"menu_title" binding:"required" msg:"请完善菜单名称"`
-	MenuTitleEn   string      `json:"menu_title_en" binding:"required" msg:"请完善菜单英文名称"`
+	Title         string      `json:"title" binding:"required" msg:"请完善菜单名称"`
+	Path          string      `json:"path" binding:"required" msg:"请完善菜单路径/别名"`
 	Slogan        string      `json:"slogan"`
 	Abstract      ctype.Array `json:"abstract"`                              // 简介
 	AbstractTime  int         `json:"abstract_time"`                         // 简介的切换时间
@@ -42,11 +42,17 @@ func (MenuApi) MenuCreateView(c *gin.Context) {
 		res.FailWithError(err, &cr, c)
 		return
 	}
-
+	//重复值判断
+	var menuList []system.MenuModel
+	count := global.DB.Find(&menuList, "title = ? and path = ? ", cr.Title, cr.Path).RowsAffected
+	if count > 0 {
+		res.FailWithMsg("重复的菜单", c)
+		return
+	}
 	//创建banner数据入库
 	menuModel := system.MenuModel{
-		MenuTitle:    cr.MenuTitle,
-		MenuTitleEn:  cr.MenuTitleEn,
+		Title:        cr.Title,
+		Path:         cr.Path,
 		Slogan:       cr.Slogan,
 		Abstract:     cr.Abstract,
 		AbstractTime: cr.AbstractTime,
@@ -78,6 +84,6 @@ func (MenuApi) MenuCreateView(c *gin.Context) {
 		res.FailWithMsg("菜单图片添加失败", c)
 		return
 	}
-	res.OKWithData("添加广告成功", c)
+	res.OKWithData("添加菜单成功", c)
 	return
 }
