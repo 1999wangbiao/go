@@ -13,6 +13,6 @@ func (s *AdvertRouter) InitAdvertRouter(Router *gin.Engine) {
 	advertApi := api.ApiGroupApp.AdvertApi
 	advertRouter.POST("create", advertApi.AdvertCreateView)
 	advertRouter.GET("list", advertApi.AdvertListView)
-	advertRouter.DELETE("delete", advertApi.ImageRemoveView)
+	advertRouter.DELETE("delete", advertApi.AdvertRemoveView)
 	advertRouter.PUT("update", advertApi.AdvertUpdateView)
 }

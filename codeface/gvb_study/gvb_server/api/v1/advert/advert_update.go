@@ -7,7 +7,14 @@ import (
 	"gvb_server/models/system"
 )
 
-// AdvertUpdateView 修改数据库中的图片名称(未修改存储的图片路径名称)
+// AdvertUpdateView 广告修改
+// @Tags      广告管理
+// @Summary	  广告修改
+// @Description  修改数据库中的图片名称(未修改存储的图片路径名称)
+// @Param     data  body     AdvertRequest true "表示多个参数"
+// @Router    /advert/update/:id [put]
+// @Produce   json
+// @Success   200   {object}  res.Response{}
 func (AdvertApi) AdvertUpdateView(c *gin.Context) {
 	var cr AdvertRequest
 

@@ -7,7 +7,14 @@ import (
 	"gvb_server/service/common"
 )
 
-// AdvertListView 查询广告列表
+// AdvertListView 广告列表
+// @Tags      广告管理
+// @Summary	  广告列表
+// @Description  广告列表
+// @Param     data  query     system.Page true "表示多个参数"
+// @Router    /advert/list [get]
+// @Produce   json
+// @Success   200   {object}  res.Response{data=res.ListResponse[system.AdvertModel]}
 func (AdvertApi) AdvertListView(c *gin.Context) {
 	//设置接受传递的参数
 	/*   type Page struct {

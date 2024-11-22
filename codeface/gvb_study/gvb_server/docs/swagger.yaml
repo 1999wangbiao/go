@@ -1,0 +1,180 @@
+basePath: /
+definitions:
+  advert.AdvertRequest:
+    properties:
+      href:
+        description: 广告链接
+        type: string
+      images:
+        description: 图片
+        type: string
+      is_show:
+        description: 是否显示
+        type: boolean
+      title:
+        description: 广告标题 唯一
+        type: string
+    required:
+    - href
+    - images
+    - is_show
+    - title
+    type: object
+  res.ListResponse-system_AdvertModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/system.AdvertModel'
+    type: object
+  res.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  system.AdvertModel:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      href:
+        description: 广告链接
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      images:
+        description: 图片
+        type: string
+      is_show:
+        description: 是否显示
+        type: boolean
+      title:
+        description: 广告标题 唯一
+        type: string
+      updated_at:
+        description: 更新时间
+        type: string
+    type: object
+  system.IDList:
+    properties:
+      id_list:
+        items:
+          type: integer
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: developer@example.com
+    name: API Support
+  description: 这是一个gvb_server API 文档
+  title: gvb_server API 文档
+  version: "1.0"
+paths:
+  /advert/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建广告
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/advert.AdvertRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加广告成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 创建广告
+      tags:
+      - 广告管理
+  /advert/list:
+    get:
+      description: 广告列表
+      parameters:
+      - in: query
+        name: key
+        type: string
+      - description: 每一页最多几个
+        in: query
+        name: limit
+        type: integer
+      - description: 第几页
+        in: query
+        name: page
+        type: integer
+      - in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-system_AdvertModel'
+              type: object
+      summary: 广告列表
+      tags:
+      - 广告管理
+  /advert/remove:
+    delete:
+      description: 广告删除
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 广告删除
+      tags:
+      - 广告管理
+  /advert/update/:id:
+    put:
+      description: 修改数据库中的图片名称(未修改存储的图片路径名称)
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/advert.AdvertRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 广告修改
+      tags:
+      - 广告管理
+swagger: "2.0"

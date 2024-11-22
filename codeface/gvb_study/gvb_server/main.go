@@ -1,12 +1,21 @@
 package main
 
 import (
+	_ "github.com/swaggo/gin-swagger"
 	"gvb_server/core"
+	_ "gvb_server/docs"
 	"gvb_server/flag"
 	"gvb_server/global"
 	"gvb_server/routers"
 )
 
+// @title gvb_server API 文档
+// @version 1.0
+// @description 这是一个gvb_server API 文档
+// @contact.name API Support
+// @contact.email developer@example.com
+// @host localhost:8080
+// @BasePath /
 func main() {
 	//读取配置文件
 	core.InitConf()
