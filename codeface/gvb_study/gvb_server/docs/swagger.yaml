@@ -1,6 +1,17 @@
 basePath: /
 definitions:
-  advert.AdvertRequest:
+  ctype.ImageType:
+    enum:
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      Local: 本地
+      QiNiu: 七牛
+    x-enum-varnames:
+    - Local
+    - QiNiu
+  request.Advert:
     properties:
       href:
         description: 广告链接
@@ -20,7 +31,7 @@ definitions:
     - is_show
     - title
     type: object
-  menu.ImageSort:
+  request.ImageSort:
     properties:
       image_id:
         description: 图片id
@@ -29,7 +40,17 @@ definitions:
         description: 在这个[]ImageSort 排第几
         type: integer
     type: object
-  menu.MenuRequest:
+  request.ImageUpdate:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  request.Menu:
     properties:
       abstract:
         description: 简介
@@ -45,30 +66,92 @@ definitions:
       image_sort_list:
         description: 图片的具体顺序
         items:
-          $ref: '#/definitions/menu.ImageSort'
+          $ref: '#/definitions/request.ImageSort'
         type: array
-      menu_title:
-        type: string
-      menu_title_en:
+      path:
         type: string
       slogan:
         type: string
       sort:
         description: 菜单顺序
         type: integer
+      title:
+        type: string
     required:
-    - menu_title
-    - menu_title_en
+    - path
     - sort
+    - title
     type: object
-  res.ListResponse-system_AdvertModel:
+  response.Banners:
+    properties:
+      id:
+        type: integer
+      path:
+        type: string
+    type: object
+  response.Image:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      path:
+        type: string
+    type: object
+  response.ListResponse-system_AdvertModel:
     properties:
       count:
         type: integer
       list:
         $ref: '#/definitions/system.AdvertModel'
     type: object
-  res.Response:
+  response.Menu:
+    properties:
+      abstract:
+        description: 简介
+        items:
+          type: string
+        type: array
+      abstract_time:
+        description: 简介的切换时间
+        type: integer
+      banner_time:
+        description: 菜单的切换时间 0表示不切换
+        type: integer
+      banners:
+        items:
+          $ref: '#/definitions/response.Banners'
+        type: array
+      created_at:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      path:
+        description: 菜单路径/别名
+        type: string
+      slogan:
+        type: string
+      sort:
+        description: "菜单顺序 \t// 图片具体顺序"
+        type: integer
+      title:
+        type: string
+      updated_at:
+        description: 更新时间
+        type: string
+    type: object
+  response.MenuName:
+    properties:
+      ID:
+        type: integer
+      path:
+        type: string
+      title:
+        type: string
+    type: object
+  response.Response:
     properties:
       code:
         type: integer
@@ -100,12 +183,55 @@ definitions:
         description: 更新时间
         type: string
     type: object
+  system.BannerModel:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      hash:
+        description: 图片hash
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      image_type:
+        allOf:
+        - $ref: '#/definitions/ctype.ImageType'
+        description: 图片存储本地还是七牛或者其他
+      name:
+        description: 图片名称
+        type: string
+      path:
+        description: 图片路径
+        type: string
+      updated_at:
+        description: 更新时间
+        type: string
+    type: object
   system.IDList:
     properties:
       id_list:
         items:
           type: integer
         type: array
+    type: object
+  system.Page:
+    properties:
+      key:
+        type: string
+      limit:
+        description: 每一页最多几个
+        type: integer
+      page:
+        description: 第几页
+        type: integer
+      sort:
+        type: string
+    type: object
+  system.SettingsUri:
+    properties:
+      name:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -116,36 +242,7 @@ info:
   title: gvb_server API 文档
   version: "1.0"
 paths:
-  /advert/create:
-    post:
-      consumes:
-      - application/json
-      description: 创建广告
-      parameters:
-      - description: 表示多个参数
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/advert.AdvertRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 添加广告成功
-          schema:
-            allOf:
-            - $ref: '#/definitions/res.Response'
-            - properties:
-                msg:
-                  type: string
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: 创建广告
-      tags:
-      - 广告管理
-  /advert/list:
+  /advert/advertList:
     get:
       description: 广告列表
       parameters:
@@ -170,15 +267,44 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/res.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/res.ListResponse-system_AdvertModel'
+                  $ref: '#/definitions/response.ListResponse-system_AdvertModel'
               type: object
       summary: 广告列表
       tags:
       - 广告管理
-  /advert/remove:
+  /advert/createAdvert:
+    post:
+      consumes:
+      - application/json
+      description: 创建广告
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Advert'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加广告成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 创建广告
+      tags:
+      - 广告管理
+  /advert/removeAdvert:
     delete:
       description: 广告删除
       parameters:
@@ -194,12 +320,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/res.Response'
+            $ref: '#/definitions/response.Response'
       summary: 广告删除
       tags:
       - 广告管理
-  /advert/update/:id:
-    put:
+  /advert/updateAdvert/:id:
+    post:
       description: 修改数据库中的图片名称(未修改存储的图片路径名称)
       parameters:
       - description: 表示多个参数
@@ -207,44 +333,319 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/advert.AdvertRequest'
+          $ref: '#/definitions/request.Advert'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/res.Response'
+            $ref: '#/definitions/response.Response'
       summary: 广告修改
       tags:
       - 广告管理
-  /menu/create:
-    post:
+  /image/deleteImage:
+    delete:
       consumes:
       - application/json
-      description: 创建菜单
-      parameters:
-      - description: 表示多个参数
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/menu.MenuRequest'
+      description: 删除数据库中的图片
       produces:
       - application/json
       responses:
         "200":
-          description: 添加菜单成功
+          description: 修改图片成功
           schema:
             allOf:
-            - $ref: '#/definitions/res.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 msg:
                   type: string
               type: object
       security:
       - ApiKeyAuth: []
-      summary: 创建菜单
+      summary: 删除数据库中的图片
+      tags:
+      - 图片管理
+  /image/imageList:
+    get:
+      consumes:
+      - application/json
+      description: 查询图片列表
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.Page'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 查询图片列表
+      tags:
+      - 图片管理
+  /image/imageNames:
+    get:
+      consumes:
+      - application/json
+      description: 查询图片(只有名字,路径,id)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.Image'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 查询图片(只有名字,路径,id)
+      tags:
+      - 图片管理
+  /image/updateImage:
+    put:
+      consumes:
+      - application/json
+      description: 修改数据库中的图片名称(未修改存储的图片路径名称)
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ImageUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改图片成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 修改数据库中的图片名称(未修改存储的图片路径名称)
+      tags:
+      - 图片管理
+  /image/uploadImages:
+    post:
+      consumes:
+      - application/json
+      description: 上传多个图片
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 上传多个图片
+      tags:
+      - 图片管理
+  /menu/createMenu:
+    post:
+      consumes:
+      - application/json
+      description: 添加菜单
+      parameters:
+      - description: 菜单信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Menu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 添加菜单
       tags:
       - 菜单管理
+  /menu/menuDetail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 查询某一个菜单详情
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 图片详情
+          schema:
+            $ref: '#/definitions/response.Menu'
+      security:
+      - ApiKeyAuth: []
+      summary: 菜单详情
+      tags:
+      - 菜单管理
+  /menu/menuList:
+    get:
+      consumes:
+      - application/json
+      description: 查询全部的菜单
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.Menu'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 查询全部菜单
+      tags:
+      - 菜单管理
+  /menu/menuNameList:
+    get:
+      consumes:
+      - application/json
+      description: 查询某一个菜单的大致信息(菜单标题,路径)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MenuName'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询某一个菜单的大致信息(菜单标题,路径)
+      tags:
+      - 菜单管理
+  /menu/removeMenu:
+    delete:
+      consumes:
+      - application/json
+      description: 删除某一个菜单
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除菜单成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 删除某一个菜单
+      tags:
+      - 菜单管理
+  /menu/updateMenu:
+    put:
+      consumes:
+      - application/json
+      description: 更新某一个菜单
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新菜单成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 更新某一个菜单
+      tags:
+      - 菜单管理
+  /settings/:name:
+    post:
+      consumes:
+      - application/json
+      description: 显示全部或者某一项配置信息
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SettingsUri'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 显示全部或者某一项配置信息
+      tags:
+      - 配置文件管理
+    put:
+      consumes:
+      - application/json
+      description: 修改某一项配置信息
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SettingsUri'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 修改某一项配置信息
+      tags:
+      - 配置文件管理
 swagger: "2.0"

@@ -1,5 +1,9 @@
 package system
 
-type ApiGroup struct {
+type SystemGroup struct {
+	AdvertApi
+	ImagesApi
+	MenuApi
 	SettingsApi
+	UserApi
 }

@@ -33,10 +33,10 @@ site_info:
     slogan: 一路前行
     slogan_en: Love and love
 jwt:
-    expires: 48
-    issuer: gin_chat
-    grant_scope: chat,read user info
-    subject: chat
+    signing-key: qmPlus
+    expires-time: 7d
+    buffer-time: 1d
+    issuer: qmPlus
 email:
     host: smtp.qq
     port: 465

@@ -3,6 +3,7 @@ package image_service
 import (
 	"fmt"
 	"gvb_server/global"
+	"gvb_server/models/common/response"
 	"gvb_server/models/system"
 	"gvb_server/utils"
 	"mime/multipart"
@@ -11,14 +12,8 @@ import (
 	"strings"
 )
 
-type FileUpLoadResponse struct {
-	FileName  string `json:"file_name"`
-	IsSuccess bool   `json:"is_success"`
-	Msg       string `json:"msg"`
-}
-
 // ImageUploadService 处理文件上传的方法
-func (ImageService) ImageUploadService(file *multipart.FileHeader) (res FileUpLoadResponse) {
+func (ImageService) ImageUploadService(file *multipart.FileHeader) (res response.FileUpLoad) {
 
 	filename := file.Filename
 	res.FileName = filename

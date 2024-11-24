@@ -1,12 +1,18 @@
 package config
 
 type Jwt struct {
-	Expires    int    `yaml:"expires" json:"expires"`        // 过期时间 单位小时
-	Issuer     string `yaml:"issuer" json:"issuer"`          // 颁发人
-	GrantScope string `yaml:"grant_scope" json:"grantScope"` // 授权范围
-	Subject    string `yaml:"subject" json:"subject"`        // 主题
+	ExpiresTime string `yaml:"expires-time" json:"expires-time"` // 过期时间 单位小时
+	Issuer      string `yaml:"issuer" json:"issuer"`             // 颁发人
+	BufferTime  string `yaml:"buffer-time" json:"buffer-time"`   // 在 Token 到期前 1 天的缓冲期，允许 Token 刷新
+	SigningKey  string `yaml:"signing-key" json:"signing-key"`   // 主题
 }
 
+// jwt:
+//
+//	signing-key: qmPlus
+//	expires-time: 7d
+//	buffer-time: 1d
+//	issuer: qmPlus
 const (
 	PRI_KEY = `-----BEGIN RSA PRIVATE KEY-----
 MIICXQIBAAKBgQDOEYGlPZuYBVDRFe6gXl/03MJE2q+k1/+PcVzubWAlF6RUHHvl

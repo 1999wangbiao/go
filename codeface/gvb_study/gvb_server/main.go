@@ -21,8 +21,6 @@ func main() {
 	core.InitConf()
 	// 初始化日志
 	global.Log = core.InitLogger()
-	global.Log.Warnln("嘻嘻嘻")
-	global.Log.Infoln("哈哈哈")
 	//连接数据库
 	global.DB = core.InitGorm()
 	option := flag.Parse()
