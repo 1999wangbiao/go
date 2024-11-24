@@ -5,4 +5,5 @@ type RouterGroup struct {
 	ImagesRouter
 	MenuRouter
 	SettingsRouter
+	UserRouter
 }

@@ -10,7 +10,7 @@ type UserModel struct {
 	global.GVA_MODEL
 	NickName      string           `gorm:"size:42" json:"nick_name"`                                                              // 昵称
 	UserName      string           `gorm:"size:36" json:"user_name"`                                                              // 用户名
-	Password      string           `gorm:"size:128" json:"password"`                                                              // 密码
+	Password      string           `gorm:"size:128" json:"-"`                                                                     // 密码
 	Salt          string           `json:"salt"`                                                                                  // 密码盐
 	Avatar        string           `gorm:"size:26" json:"avatar"`                                                                 // 头像
 	Email         string           `gorm:"size:128" json:"email"`                                                                 // 邮箱

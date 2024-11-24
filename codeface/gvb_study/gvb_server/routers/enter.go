@@ -24,5 +24,9 @@ func InitRoutes() *gin.Engine {
 	Router.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 	systemRouter := RouterGroupApp.System
 	systemRouter.InitSettingsRouter(Router)
+	systemRouter.InitAdvertRouter(Router)
+	systemRouter.InitImagesRouter(Router)
+	systemRouter.InitMenuRouter(Router)
+	systemRouter.InitUserRouter(Router)
 	return Router
 }

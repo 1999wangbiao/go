@@ -39,6 +39,10 @@ func OKWith(c *gin.Context) {
 	Result(Success, map[string]any{}, "成功", c)
 
 }
+func OkWithDetailed(data interface{}, message string, c *gin.Context) {
+	Result(Success, data, message, c)
+}
+
 func OKWithData(data any, c *gin.Context) {
 	Result(Success, data, "成功", c)
 }
@@ -61,6 +65,9 @@ func FailWithMsg(msg string, c *gin.Context) {
 func FailWithError(err error, obj any, c *gin.Context) {
 	msg := utils.GetValidMsg(err, obj)
 	FailWithMsg(msg, c)
+}
+func FailWithDetailed(data interface{}, message string, c *gin.Context) {
+	Result(Error, data, message, c)
 }
 
 func FailWithCode(code ErrorCode, c *gin.Context) {

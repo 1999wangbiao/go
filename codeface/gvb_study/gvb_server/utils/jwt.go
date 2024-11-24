@@ -27,14 +27,6 @@ func NewJWT() *JWT {
 }
 
 // CreateClaims
-/*
-type Jwt struct {
-	Expires    int    `yaml:"expires" json:"expires"`        // 过期时间 单位小时
-	Issuer     string `yaml:"issuer" json:"issuer"`          // 颁发人
-	GrantScope string `yaml:"grant_scope" json:"grantScope"` // 授权范围
-	Subject    string `yaml:"subject" json:"subject"`        // 主题
-}
-*/
 func (j *JWT) CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
 	bf, _ := ParseDuration(global.Config.Jwt.BufferTime)
 	ep, _ := ParseDuration(global.Config.Jwt.ExpiresTime)
