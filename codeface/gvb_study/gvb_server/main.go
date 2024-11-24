@@ -21,6 +21,8 @@ func main() {
 	core.InitConf()
 	// 初始化日志
 	global.Log = core.InitLogger()
+	//连接redis
+	core.Redis()
 	//连接数据库
 	global.DB = core.InitGorm()
 	option := flag.Parse()

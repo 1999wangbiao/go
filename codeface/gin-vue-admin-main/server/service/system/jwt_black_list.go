@@ -49,6 +49,7 @@ func (jwtService *JwtService) IsBlacklist(jwt string) bool {
 
 func (jwtService *JwtService) GetRedisJWT(userName string) (redisJWT string, err error) {
 	redisJWT, err = global.GVA_REDIS.Get(context.Background(), userName).Result()
+
 	return redisJWT, err
 }
 
